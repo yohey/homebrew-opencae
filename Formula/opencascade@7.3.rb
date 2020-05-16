@@ -1,16 +1,10 @@
-class Opencascade < Formula
+class OpencascadeAT73 < Formula
   desc "3D modeling and numerical simulation software for CAD/CAM/CAE"
   homepage "https://www.opencascade.com/content/overview"
-  url "https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=refs/tags/V7_3_0p3;sf=tgz"
-  version "7.3.0p3"
-  sha256 "fbd46db3e75313131b88a606024ea4d4496c3c7f6e68c23988e9d3e673d4f21b"
+  url "https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=refs/tags/V7_3_0p4;sf=tgz"
+  version "7.3.0p4"
+  sha256 "42555cefe5440a4ccdec7600fe339b5d8b94bcbbe476a4b1de97107468868c22"
 
-  bottle do
-    cellar :any
-    sha256 "8427b4f13e30e4bf455b769b42375a50ff338a73b5d9b392bc054793ec3f2a16" => :mojave
-    sha256 "ce9ba0fab8d9356eeb89b2cadfbdf0e00fcfb0fc4b03e08dc2c9a8e32e77e319" => :high_sierra
-    sha256 "42fb6d39f4c069543762c68dbeb49c1114c123b716b9504cb333bd23308497c4" => :sierra
-  end
 
   depends_on "cmake" => :build
   depends_on "doxygen" => :build
