@@ -5,6 +5,7 @@ class OpencascadeAT73 < Formula
   version "7.3.0p4"
   sha256 "42555cefe5440a4ccdec7600fe339b5d8b94bcbbe476a4b1de97107468868c22"
 
+  keg_only :versioned_formula
 
   depends_on "cmake" => :build
   depends_on "doxygen" => :build
