@@ -7,12 +7,12 @@ class MedFile < Formula
   depends_on "cmake" => :build
   depends_on "gcc" => :build   # for gfortan
   depends_on "swig" => :build
-  depends_on "hdf5"
-  depends_on "python@2"
+  depends_on "hdf5@1.10"
+  depends_on "python@3.8"
 
   def install
 
-    python_prefix=`#{Formula["python@2"].opt_bin}/python2-config --prefix`.chomp
+    python_prefix=`#{Formula["python@3.8"].opt_bin}/python3-config --prefix`.chomp
     python_include=Dir["#{python_prefix}/include/*"].first
 
     #ENV.cxx11
@@ -34,7 +34,7 @@ class MedFile < Formula
         return MEDlibraryNumVersion(&major, &minor, &release);
       }
     EOS
-    system ENV.cc, "test.c", "-I#{include}", "-I#{Formula["hdf5"].opt_include}",
+    system ENV.cc, "test.c", "-I#{include}", "-I#{Formula["hdf5@1.10"].opt_include}",
                    "-L#{lib}", "-lmedC", "-o", "test"
     system "./test"
   end
