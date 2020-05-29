@@ -1,19 +1,12 @@
-class Nglib < Formula
+class NglibAT53 < Formula
   desc "C++ Library of NETGEN's tetrahedral mesh generator"
   homepage "https://sourceforge.net/projects/netgen-mesher/"
   url "https://downloads.sourceforge.net/project/netgen-mesher/netgen-mesher/5.3/netgen-5.3.1.tar.gz"
   sha256 "cb97f79d8f4d55c00506ab334867285cde10873c8a8dc783522b47d2bc128bf9"
   revision 1
 
-  bottle do
-    root_url "https://dl.bintray.com/freecad/bottles-freecad"
-    cellar :any
-    sha256 "2dd4e0d0fd4f5ebaebe8c3f3ad30fe35cce73a8b49e508f929da7140269100c2" => :high_sierra
-    sha256 "32fff1b5b224a8823d4e002c60c9fad6864308b0ed0bf44b154af9ee45dfab3c" => :sierra
-    sha256 "e71ea58c885301439b3e37d08165c4179aec950c903c8593e7d98bc84513ef4f" => :el_capitan
-  end
 
-  depends_on "opencascade" => :recommended
+  depends_on "yohey/opencae/opencascade@7.3" => :recommended
 
   # Patch two main issues:
   #   Makefile - remove TCL scripts that aren't reuquired without NETGEN.
@@ -24,7 +17,7 @@ class Nglib < Formula
   end
 
   # OpenCascase 7.x compatibility patches
-  if build.with? "opencascade"
+  if build.with? "opencascade@7.3"
     patch do
       url "https://github.com/FreeCAD/homebrew-freecad/releases/download/0/occt7.x-compatibility-patches.diff"
       sha256 "18e0491444610dc3a04db105984993e9035cc82d77ab12a93c2ca99a9b8bed33"
@@ -32,14 +25,14 @@ class Nglib < Formula
   end
 
   def install
-    ENV.cxx11 if build.with? "opencascade"
+    ENV.cxx11 if build.with? "opencascade@7.3"
 
-    cad_kernel = Formula["opencascade"]
+    cad_kernel = Formula["opencascade@7.3"]
 
     # Set OCC search path to Homebrew prefix
     inreplace "configure" do |s|
-      s.gsub!(%r{(OCCFLAGS="-DOCCGEOMETRY -I\$occdir/inc )(.*$)}, "\\1-I#{cad_kernel.opt_include}/#{cad_kernel}\"")
-      s.gsub!(/(^.*OCCLIBS="-L.*)( -lFWOSPlugin")/, "\\1\"") if build.with? "opencascade"
+      s.gsub!(%r{(OCCFLAGS="-DOCCGEOMETRY -I\$occdir/inc )(.*$)}, "\\1-I#{cad_kernel.opt_include}/#{cad_kernel.to_s.sub(/@.*$/, "")}\"")
+      s.gsub!(/(^.*OCCLIBS="-L.*)( -lFWOSPlugin")/, "\\1\"") if build.with? "opencascade@7.3"
       s.gsub!(%r{(OCCLIBS="-L\$occdir/lib)(.*$)}, "\\1\"") if OS.mac?
     end
 
@@ -50,7 +43,7 @@ class Nglib < Formula
       --enable-nglib
     ]
 
-    if build.with? "opencascade"
+    if build.with? "opencascade@7.3"
       args << "--enable-occ"
       args << "--with-occ=#{cad_kernel.opt_prefix}"
     end
