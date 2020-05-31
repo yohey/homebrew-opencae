@@ -6,6 +6,8 @@ class Su2 < Formula
   sha256 "3cb2b87ef6ad3d31011756ca1da068fc8172c0d2d1be902fbbd4800b50da28bd"
   head "https://github.com/su2code/SU2.git", :branch => "master"
 
+  option "with-debug", "Enable debug build"
+
   depends_on "meson" => :build
   depends_on "ninja" => :build
 
@@ -24,6 +26,7 @@ class Su2 < Formula
   def install
     args = std_meson_args
 
+    args << "--buildtype=#{build.with?("debug") ? "debug" : "release"}"
     args << "-Denable-openblas=true" if build.with?("openblas")
     args << "-Denable-pywrapper=true" if build.with?("python@3.8")
 
