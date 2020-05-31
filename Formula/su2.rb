@@ -19,6 +19,8 @@ class Su2 < Formula
 
   depends_on "mpi4py" if build.with?("python@3.8") && build.with?("open-mpi")
 
+  patch :DATA
+
   def install
     args = std_meson_args
 
@@ -36,3 +38,17 @@ class Su2 < Formula
     system "SU2_CFD", "--help"
   end
 end
+
+__END__
+diff --git a/Common/src/geometry/CPhysicalGeometry.cpp b/Common/src/geometry/CPhysicalGeometry.cpp
+index b3f095e217..d2aeeb964c 100644
+--- a/Common/src/geometry/CPhysicalGeometry.cpp
++++ b/Common/src/geometry/CPhysicalGeometry.cpp
+@@ -6327,6 +6327,7 @@ void CPhysicalGeometry::SetTurboVertex(CConfig *config, unsigned short val_iZone
+     /*--- to be set for all the processor to initialize an appropriate number of frequency for the NR BC ---*/
+     if(nVert > nVertMax){
+       SetnVertexSpanMax(marker_flag,nVert);
++      nVertMax = nVert;
+     }
+     /*--- for all the processor should be known the amount of total turbovertex per span  ---*/
+     nTotVertex_gb[iSpan]= (int)nVert;
