@@ -1,8 +1,8 @@
 class Openmodelica < Formula
   desc "OpenModelica is an open-source Modelica-based modeling and simulation environment intended for industrial and academic usage."
   homepage "https://openmodelica.org"
-  url "https://github.com/OpenModelica/OpenModelica.git", :using => :git, :tag => "v1.14.2"
-  version "1.14.2"
+  url "https://github.com/OpenModelica/OpenModelica.git", :using => :git, :tag => "v1.16.0-dev.03"
+  version "1.16.0-dev.03"
   head "https://github.com/OpenModelica/OpenModelica.git"
 
   depends_on "autoconf" => :build
@@ -11,34 +11,42 @@ class Openmodelica < Formula
   depends_on "cmake" => :build
   depends_on "gcc@9" => :build
   depends_on "svn" => :build
+  depends_on "gnu-sed" => :build
+  depends_on "pkg-config" => :build
+  depends_on "xz" => :build
 
   depends_on "boost"
   depends_on "hwloc"
   depends_on "lapack"
-  depends_on "openblas" => "with-openmp"
-  depends_on "brewsci/science/lp_solve" => "with-python"
+  depends_on "openblas"
+  depends_on "brewsci/science/lp_solve"
   depends_on "hdf5"
   depends_on "expat"
   depends_on "gettext"
   depends_on "ncurses"
   depends_on "readline"
-  depends_on "omniorb"
   depends_on "sundials"
-  depends_on "yohey/legacy/qt@5.5"
+  depends_on "qt"
+  depends_on "kde-mac/kde/qt-webkit"
+
+  depends_on "omniorb" => :optional
 
   patch :DATA
 
   def install
-    ENV.append "CXXFLAGS", "-stdlib=libc++"
-    ENV.append "LDFLAGS",  "-stdlib=libc++"
-
+    ENV.cxx11
+    ENV["QMAKEPATH"] = "#{Formula["qt-webkit"].opt_prefix}"
     ENV["FC"] = "#{Formula["gcc@9"].opt_bin}/gfortran-9"
 
     args = %W[
       --prefix=#{prefix}
-      --with-omniORB=#{Formula["omniorb"].opt_prefix}
+      --disable-debug
+      --with-lapack=-lopenblas
       --with-omlibrary=all
+      --disable-modelica3d
     ]
+
+    args << "--with-omniORB=#{Formula["omniorb"].opt_prefix}" if build.with? "omniorb"
 
     system "autoconf"
     system "./configure", *args
@@ -62,7 +70,7 @@ end
 __END__
 --- a/Makefile.in
 +++ b/Makefile.in
-@@ -99,7 +99,7 @@ bindir = @bindir@
+@@ -110,7 +110,7 @@ bindir = @bindir@
  libdir = @libdir@
  includedir = @includedir@
  docdir = @docdir@
@@ -82,17 +90,6 @@ __END__
    CXXFLAGS="$OLD_CXXFLAGS $flag"
    AC_TRY_LINK([], [return 0;], [LDFLAGS_LIBSTDCXX="$flag"],[CXXFLAGS="$OLD_CXXFLAGS"])
  done
---- a/OMPlot/qwt/Makefile.unix.in
-+++ b/OMPlot/qwt/Makefile.unix.in
-@@ -14,7 +14,7 @@ all: build
- 
- Makefile: qwt.pro
- 	@rm -f $@
--	$(QMAKE) QMAKE_CXX=@CXX@ QMAKE_CXXFLAGS="@CXXFLAGS@" QMAKE_LINK="@CXX@" qwt.pro
-+	$(QMAKE) QMAKE_CXX=@CXX@ QMAKE_CXXFLAGS="@CXXFLAGS@" QMAKE_LINK="@CXX@" QMAKE_LFLAGS="@LDFLAGS@" qwt.pro
- clean:
- 	test ! -f Makefile || $(MAKE) -f Makefile clean
- 	rm -rf build lib Makefile
 --- a/OMOptim/OMOptimBasis/Tools/LowTools.cpp
 +++ b/OMOptim/OMOptimBasis/Tools/LowTools.cpp
 @@ -465,7 +465,7 @@ int LowTools::round(double d)
@@ -104,3 +101,54 @@ __END__
  }
  
  double LowTools::roundToMultiple(double value, double multiple)
+--- a/OMPlot/qwt/Makefile.unix.in
++++ b/OMPlot/qwt/Makefile.unix.in
+@@ -14,7 +14,7 @@ all: build
+ 
+ Makefile: qwt.pro
+ 	@rm -f $@
+-	$(QMAKE) QMAKE_CXX=@CXX@ QMAKE_CXXFLAGS="@CXXFLAGS@" QMAKE_LINK="@CXX@" qwt.pro
++	$(QMAKE) QMAKE_CXX=@CXX@ QMAKE_CXXFLAGS="@CXXFLAGS@" QMAKE_LINK="@CXX@" QMAKE_LFLAGS="@LDFLAGS@" qwt.pro
+ clean:
+ 	test ! -f Makefile || $(MAKE) -f Makefile clean
+ 	rm -rf build lib Makefile
+--- a/OMPlot/qwt/src/qwt_null_paintdevice.h
++++ b/OMPlot/qwt/src/qwt_null_paintdevice.h
+@@ -13,6 +13,7 @@
+ #include "qwt_global.h"
+ #include <qpaintdevice.h>
+ #include <qpaintengine.h>
++#include <qpainterpath.h>
+ 
+ /*!
+   \brief A null paint device doing nothing
+--- a/OMPlot/qwt/src/qwt_painter.h
++++ b/OMPlot/qwt/src/qwt_painter.h
+@@ -17,6 +17,7 @@
+ #include <qpen.h>
+ #include <qline.h>
+ #include <qpalette.h>
++#include <qpainterpath.h>
+ 
+ class QPainter;
+ class QBrush;
+--- a/OMPlot/qwt/src/qwt_painter_command.h
++++ b/OMPlot/qwt/src/qwt_painter_command.h
+@@ -15,6 +15,7 @@
+ #include <qpixmap.h>
+ #include <qimage.h>
+ #include <qpolygon.h>
++#include <qpainterpath.h>
+ 
+ class QPainterPath;
+ 
+--- a/common/m4/qmake.m4
++++ b/common/m4/qmake.m4
+@@ -42,6 +42,7 @@ if test -n "$QMAKE"; then
+     echo 'cat $MAKEFILE | \
+       sed "s/-arch@<:@\\@:>@* i386//g" | \
+       sed "s/-arch@<:@\\@:>@* x86_64//g" | \
++      sed "s/-arch@<:@\\@:>@* \\$(arch)//g" | \
+       sed "s/-arch//g" | \
+       sed "s/-Xarch@<:@^ @:>@*//g" > $MAKEFILE.fixed && \
+       mv $MAKEFILE.fixed $MAKEFILE' >> qmake.sh
