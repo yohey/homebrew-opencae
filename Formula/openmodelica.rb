@@ -10,6 +10,7 @@ class Openmodelica < Formula
   depends_on "libtool" => :build
   depends_on "cmake" => :build
   depends_on "gcc@9" => :build
+  depends_on "svn" => :build
 
   depends_on "boost"
   depends_on "hwloc"
