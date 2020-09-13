@@ -19,6 +19,10 @@ class OmlibExternalmedia < Formula
       system "bash", "BuildLib-CMake.sh"
     end
 
+    cd "Modelica/ExternalMedia 3.2.1/Resources/Library" do
+      system "mv", "Darwin", "darwin64"
+    end
+
     (lib/"omlibrary").mkpath
     (lib/"omlibrary").install Dir["Modelica/ExternalMedia 3.2.1"]
   end
