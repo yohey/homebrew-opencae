@@ -5,6 +5,8 @@ class Coolprop < Formula
   version "v6.4.1"
   head "https://github.com/CoolProp/CoolProp.git"
 
+  keg_only ""
+
   option "with-static", "Enable static build"
   option "without-shared", "Disable shared build"
 
@@ -33,7 +35,8 @@ class Coolprop < Formula
     lib.install Dir["build-shared/libCoolProp.dylib"] if build.with?("shared")
     lib.install Dir["build-static/libCoolProp.a"]     if build.with?("static")
     include.install Dir["include/*.h"]
-    include.install Dir["externals/fmtlib/fmt/*.h"]
+    (include/"fmt").mkpath
+    (include/"fmt").install Dir["externals/fmtlib/fmt/*.h"]
   end
 
   # test do
