@@ -1,9 +1,9 @@
 class OmlibExternalmedia < Formula
   desc "The ExternalMedia library provides a framework for interfacing external codes computing fluid properties to Modelica.Media-compatible component models."
   homepage "https://github.com/modelica-3rdparty/ExternalMedia"
-  url "https://github.com/modelica-3rdparty/ExternalMedia.git", :using => :git, :branch => "v.3.3.0-dev"
-  version "3.3.0-dev"
-  head "https://github.com/modelica-3rdparty/ExternalMedia.git"
+  # url "https://github.com/modelica-3rdparty/ExternalMedia.git", :using => :git, :branch => "v.3.3.0-dev"
+  # version "3.3.0-dev"
+  head "https://github.com/slamer59/ExternalMedia.git"
 
   depends_on "cmake" => :build
   depends_on "coreutils" => :build
@@ -20,7 +20,7 @@ class OmlibExternalmedia < Formula
     end
 
     cd "Modelica/ExternalMedia 3.2.1/Resources/Library" do
-      system "mv", "Darwin", "darwin64"
+      mv "Darwin", "darwin64"
     end
 
     (lib/"omlibrary").mkpath
@@ -34,8 +34,8 @@ end
 __END__
 --- a/Projects/BuildLib-CMake.sh
 +++ b/Projects/BuildLib-CMake.sh
-@@ -18,16 +18,16 @@
- 
+@@ -19,12 +19,12 @@ NCPU=`nproc --all`
+ CMAKE_SYSTEM_NAME='linux64'
  EXTERNALS="../externals"
  if [ ! -d "$EXTERNALS" ]; then mkdir -p "$EXTERNALS"; fi
 -EXTERNALS=`readlink -f "$EXTERNALS"`
@@ -49,39 +49,25 @@ __END__
  
  echo " "
  echo "********* Detecting supported property libraries ***********"
--FLUIDP=1
-+FLUIDP=0
- COOLP=1
- echo "FluidProp support set to: $FLUIDP"
- echo  "CoolProp support set to: $COOLP"
-@@ -39,12 +39,23 @@ if [ "$COOLP" == "1" ]; then
+@@ -39,13 +39,13 @@ if [ "$COOLP" == "1" ]; then
+   if [ -d "$CP_SRC" ]; then
      pushd "$CP_SRC"
      git pull origin master
+-    git checkout v6.1.0
++    git checkout v6.4.1
      git submodule init
--    git submodule update
-+    # git submodule update
+     git submodule update
      # git submodule foreach git pull origin master
      popd 
    else
-     git clone --recursive https://github.com/CoolProp/CoolProp.git "$CP_SRC"
+-    git clone -b v6.1.0 --single-branch --recursive https://github.com/CoolProp/CoolProp.git "$CP_SRC"
++    git clone -b v6.4.1 --single-branch --recursive https://github.com/CoolProp/CoolProp.git "$CP_SRC"
+ #   git clone --recursive https://github.com/CoolProp/CoolProp.git "$CP_SRC"
    fi
-+  pushd "$CP_SRC"
-+  git checkout v5.1.2
-+  rm -rf externals/ExcelAddinInstaller
-+  rm -rf externals/fmtlib
-+  rm -rf externals/pybind11
-+  rm -rf externals/rapidjson
-+  git submodule update $(find externals -type d -not -name 'Eigen' -mindepth 1 -maxdepth 1)
-+  (cd externals/msgpack-c && git reset --hard)
-+  (cd externals/Eigen && git checkout 3.2.9)
-+  gsed -i '145s/UNIX/CMAKE_DL_LIBS/' CMakeLists.txt
-+  popd
  fi
- 
- pushd "$BUILD_DIR"
 --- a/Projects/CMakeLists.txt
 +++ b/Projects/CMakeLists.txt
-@@ -42,6 +42,7 @@ set  (INCLUDE_DIRS "")
+@@ -42,11 +42,13 @@ set  (INCLUDE_DIRS "")
  SET(COOLPROP_STATIC_LIBRARY OFF CACHE BOOL "Force the object library")
  SET(COOLPROP_SHARED_LIBRARY OFF CACHE BOOL "Force the object library")
  SET(COOLPROP_OBJECT_LIBRARY ON  CACHE BOOL "Force the object library")
@@ -89,7 +75,13 @@ __END__
  ADD_SUBDIRECTORY ("${CMAKE_CURRENT_SOURCE_DIR}/../externals/CoolProp.git" "${CMAKE_CURRENT_BINARY_DIR}/CoolProp")
  list (APPEND INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/../externals/CoolProp.git")
  list (APPEND INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/../externals/CoolProp.git/include")
-@@ -90,6 +91,7 @@ LIST (APPEND LIB_SOURCES $<TARGET_OBJECTS:CoolProp>)
+ list (APPEND INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/../externals/CoolProp.git/externals/msgpack-c/include")
+ list (APPEND INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/../externals/CoolProp.git/externals/cppformat")
++list (APPEND INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/../externals/CoolProp.git/externals/fmtlib")
+ 
+ ## We use CMake to handle the dependency since the primary VCS for 
+ ## ExternalMedia still is SVN.
+@@ -90,6 +92,7 @@ LIST (APPEND LIB_SOURCES $<TARGET_OBJECTS:CoolProp>)
  
  add_library (${LIBRARY_NAME} STATIC ${LIB_SOURCES})
  set_property (TARGET ${LIBRARY_NAME} PROPERTY VERSION ${APP_VERSION})
@@ -126,3 +118,14 @@ __END__
  
  // Selection of used external fluid property computation packages.
  //! CoolProp solver
+--- a/Modelica/ExternalMedia 3.2.1/Media/BaseClasses/ExternalTwoPhaseMedium.mo	
++++ b/Modelica/ExternalMedia 3.2.1/Media/BaseClasses/ExternalTwoPhaseMedium.mo	
+@@ -104,7 +104,7 @@ package ExternalTwoPhaseMedium "Generic external two phase medium package"
+       "Specific entropy";
+     SaturationProperties sat "saturation property record";
+   equation
+-    MM = externalFluidConstants.molarMass;
++    MM = fluidConstants.molarMass;
+     R = Modelica.Constants.R/MM;
+     if (onePhase or (basePropertiesInputChoice == InputChoice.pT)) then
+       phaseInput = 1 "Force one-phase property computation";
