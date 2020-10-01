@@ -2,9 +2,9 @@
 class Frendy < Formula
   desc "FRENDY：FRom Evaluated Nuclear Data librarY to any application"
   homepage "https://rpg.jaea.go.jp/main/ja/program_frendy/"
-  url "http://rpg.jaea.go.jp/download/frendy_20191126.tar.gz"
-  version "1.02.003"
-  sha256 "2510e4767daa4624fe2934b7b2405d7a77fd25b0f74ee18dd5a47b2536749725"
+  url "http://rpg.jaea.go.jp/download/frendy_20200929.tar.gz"
+  version "1.03.003"
+  sha256 "26e88f2e070e16cb20dde0cafa436fb644447610b9f1013221e6a3864e637b98"
 
   depends_on "openblas"
 
