@@ -1,9 +1,9 @@
 class Su2 < Formula
   desc "SU2: An Open-Source Suite for Multiphysics Simulation and Design"
   homepage "https://su2code.github.io"
-  url "https://github.com/su2code/SU2/archive/v7.0.5.tar.gz"
-  version "v7.0.5"
-  sha256 "3cb2b87ef6ad3d31011756ca1da068fc8172c0d2d1be902fbbd4800b50da28bd"
+  url "https://github.com/su2code/SU2/archive/v7.0.7.tar.gz"
+  version "v7.0.7"
+  sha256 "123c42f097c583a3d7b53123d79bf470f67a6481851fddb010ff590837da61d4"
   head "https://github.com/su2code/SU2.git", :branch => "master"
 
   option "with-debug", "Enable debug build"
@@ -44,10 +44,10 @@ end
 
 __END__
 diff --git a/Common/src/geometry/CPhysicalGeometry.cpp b/Common/src/geometry/CPhysicalGeometry.cpp
-index b3f095e217..d2aeeb964c 100644
+index eeeca24e67..1fd346b2aa 100644
 --- a/Common/src/geometry/CPhysicalGeometry.cpp
 +++ b/Common/src/geometry/CPhysicalGeometry.cpp
-@@ -6327,6 +6327,7 @@ void CPhysicalGeometry::SetTurboVertex(CConfig *config, unsigned short val_iZone
+@@ -5929,6 +5929,7 @@ void CPhysicalGeometry::SetTurboVertex(CConfig *config, unsigned short val_iZone
      /*--- to be set for all the processor to initialize an appropriate number of frequency for the NR BC ---*/
      if(nVert > nVertMax){
        SetnVertexSpanMax(marker_flag,nVert);
