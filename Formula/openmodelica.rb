@@ -1,8 +1,8 @@
 class Openmodelica < Formula
   desc "OpenModelica is an open-source Modelica-based modeling and simulation environment intended for industrial and academic usage."
   homepage "https://openmodelica.org"
-  url "https://github.com/OpenModelica/OpenModelica.git", :using => :git, :tag => "v1.16.0-dev.03"
-  version "1.16.0-dev.03"
+  url "https://github.com/OpenModelica/OpenModelica.git", :using => :git, :tag => "v1.16.0"
+  version "1.16.0"
   head "https://github.com/OpenModelica/OpenModelica.git"
 
   depends_on "autoconf" => :build
@@ -132,16 +132,6 @@ __END__
  
  class QPainter;
  class QBrush;
---- a/OMPlot/qwt/src/qwt_painter_command.h
-+++ b/OMPlot/qwt/src/qwt_painter_command.h
-@@ -15,6 +15,7 @@
- #include <qpixmap.h>
- #include <qimage.h>
- #include <qpolygon.h>
-+#include <qpainterpath.h>
- 
- class QPainterPath;
- 
 --- a/common/m4/qmake.m4
 +++ b/common/m4/qmake.m4
 @@ -42,6 +42,7 @@ if test -n "$QMAKE"; then
