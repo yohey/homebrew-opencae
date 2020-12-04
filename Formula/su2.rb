@@ -1,9 +1,9 @@
 class Su2 < Formula
   desc "SU2: An Open-Source Suite for Multiphysics Simulation and Design"
   homepage "https://su2code.github.io"
-  url "https://github.com/su2code/SU2/archive/v7.0.7.tar.gz"
-  version "v7.0.7"
-  sha256 "123c42f097c583a3d7b53123d79bf470f67a6481851fddb010ff590837da61d4"
+  url "https://github.com/su2code/SU2/archive/v7.0.8.tar.gz"
+  version "v7.0.8"
+  sha256 "53b6d417e17ff4290a871257b2739a3d9bcd701d37c69e85397efedac93ba17f"
   head "https://github.com/su2code/SU2.git", :branch => "master"
 
   option "with-debug", "Enable debug build"
@@ -17,9 +17,9 @@ class Su2 < Formula
 
   depends_on "openblas" => :optional
   depends_on "open-mpi" => :optional
-  depends_on "python@3.8" => :optional
+  depends_on "python" => :optional
 
-  depends_on "mpi4py" if build.with?("python@3.8") && build.with?("open-mpi")
+  depends_on "mpi4py" if build.with?("python") && build.with?("open-mpi")
 
   patch :DATA
 
@@ -28,7 +28,7 @@ class Su2 < Formula
 
     args << "--buildtype=#{build.with?("debug") ? "debug" : "release"}"
     args << "-Denable-openblas=true" if build.with?("openblas")
-    args << "-Denable-pywrapper=true" if build.with?("python@3.8")
+    args << "-Denable-pywrapper=true" if build.with?("python")
 
     mkdir "build" do
       system "meson", *args, ".."
@@ -43,8 +43,6 @@ class Su2 < Formula
 end
 
 __END__
-diff --git a/Common/src/geometry/CPhysicalGeometry.cpp b/Common/src/geometry/CPhysicalGeometry.cpp
-index eeeca24e67..1fd346b2aa 100644
 --- a/Common/src/geometry/CPhysicalGeometry.cpp
 +++ b/Common/src/geometry/CPhysicalGeometry.cpp
 @@ -5929,6 +5929,7 @@ void CPhysicalGeometry::SetTurboVertex(CConfig *config, unsigned short val_iZone
