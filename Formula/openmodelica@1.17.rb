@@ -5,6 +5,8 @@ class OpenmodelicaAT117 < Formula
   version "1.17.0-dev"
   head "https://github.com/OpenModelica/OpenModelica.git"
 
+  keg_only :versioned_formula
+
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
