@@ -1,8 +1,8 @@
 class Openmodelica < Formula
   desc "OpenModelica is an open-source Modelica-based modeling and simulation environment intended for industrial and academic usage."
   homepage "https://openmodelica.org"
-  url "https://github.com/OpenModelica/OpenModelica.git", :using => :git, :tag => "v1.16.4"
-  version "1.16.4"
+  url "https://github.com/OpenModelica/OpenModelica.git", :using => :git, :tag => "v1.16.5"
+  version "1.16.5"
   head "https://github.com/OpenModelica/OpenModelica.git"
 
   depends_on "autoconf" => :build
@@ -10,6 +10,7 @@ class Openmodelica < Formula
   depends_on "libtool" => :build
   depends_on "cmake" => :build
   depends_on "gcc@9" => :build
+  depends_on "openjdk" => :build
   depends_on "svn" => :build
   depends_on "gnu-sed" => :build
   depends_on "pkg-config" => :build
@@ -26,7 +27,7 @@ class Openmodelica < Formula
   depends_on "ncurses"
   depends_on "readline"
   depends_on "sundials"
-  depends_on "qt"
+  depends_on "qt@5"
   depends_on "kde-mac/kde/qt-webkit"
 
   depends_on "omniorb" => :optional
