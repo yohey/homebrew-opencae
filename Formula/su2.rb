@@ -35,6 +35,9 @@ class Su2 < Formula
       system "ninja", "-v"
       system "ninja", "install", "-v"
     end
+
+    share.install "config_template.cfg"
+    share.install "TestCases"
   end
 
   test do
