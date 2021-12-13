@@ -16,8 +16,13 @@ class Njoy21 < Formula
 
     mkdir "Build" do
       system "cmake", *args, ".."
-      system "make", "-j#{ENV.make_jobs}", "install"
+      system "make", "-j#{ENV.make_jobs}"
+      system "make", "install"
+      bin.install Dir["njoy21"]
     end
+
+    prefix.install Dir["ReleaseNotes.md"]
+    share.install Dir["tests"]
   end
 
   # test do
