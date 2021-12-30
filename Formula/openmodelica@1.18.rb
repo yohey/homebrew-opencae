@@ -1,54 +1,60 @@
-class OpenmodelicaAT117 < Formula
+class OpenmodelicaAT118 < Formula
   desc "OpenModelica is an open-source Modelica-based modeling and simulation environment intended for industrial and academic usage."
   homepage "https://openmodelica.org"
-  url "https://github.com/OpenModelica/OpenModelica.git", :using => :git, :tag => "v1.17.0-dev"
-  version "1.17.0-dev"
+  url "https://github.com/OpenModelica/OpenModelica.git", :using => :git, :tag => "v1.18.1"
+  version "1.18.1"
   head "https://github.com/OpenModelica/OpenModelica.git"
 
   keg_only :versioned_formula
 
-  depends_on "autoconf" => :build
+  depends_on "autoconf@2.69" => :build
   depends_on "automake" => :build
-  depends_on "libtool" => :build
   depends_on "cmake" => :build
-  depends_on "gcc@9" => :build
-  depends_on "svn" => :build
+  depends_on "gcc" => :build
+  depends_on "libtool" => :build
   depends_on "gnu-sed" => :build
   depends_on "pkg-config" => :build
-  depends_on "xz" => :build
 
   depends_on "boost"
-  depends_on "hwloc"
-  depends_on "lapack"
-  depends_on "openblas"
-  depends_on "brewsci/science/lp_solve"
-  depends_on "hdf5"
-  depends_on "expat"
   depends_on "gettext"
-  depends_on "ncurses"
+  depends_on "hdf5"
+  depends_on "hwloc"
+  depends_on "lp_solve"
+  depends_on "omniorb"
+  depends_on "openblas"
   depends_on "readline"
   depends_on "sundials"
-  depends_on "qt"
+  depends_on "qt@5"
   depends_on "kde-mac/kde/qt-webkit"
 
-  depends_on "omniorb" => :optional
+  uses_from_macos "curl"
+  uses_from_macos "expat"
+  uses_from_macos "libffi", since: :catalina
+  uses_from_macos "ncurses"
 
   patch :DATA
 
   def install
     ENV.cxx11
     ENV["QMAKEPATH"] = "#{Formula["qt-webkit"].opt_prefix}"
-    ENV["FC"] = "#{Formula["gcc@9"].opt_bin}/gfortran-9"
+    ENV["FC"] = "#{Formula["gcc"].opt_bin}/gfortran"
+
+    if MacOS.version >= :catalina
+      ENV.append_to_cflags "-I#{MacOS.sdk_path_if_needed}/usr/include/ffi"
+    else
+      ENV.append_to_cflags "-I#{Formula["libffi"].opt_include}"
+    end
 
     args = %W[
       --prefix=#{prefix}
       --disable-debug
+      --disable-modelica3d
+      --with-cppruntime
+      --with-hwloc
       --with-lapack=-lopenblas
       --with-omlibrary=all
-      --disable-modelica3d
+      --with-omniORB
     ]
-
-    args << "--with-omniORB=#{Formula["omniorb"].opt_prefix}" if build.with? "omniorb"
 
     system "autoconf"
     system "./configure", *args
@@ -134,13 +140,15 @@ __END__
  
  class QPainter;
  class QBrush;
---- a/common/m4/qmake.m4
-+++ b/common/m4/qmake.m4
-@@ -42,6 +42,7 @@ if test -n "$QMAKE"; then
-     echo 'cat $MAKEFILE | \
-       sed "s/-arch@<:@\\@:>@* i386//g" | \
-       sed "s/-arch@<:@\\@:>@* x86_64//g" | \
-+      sed "s/-arch@<:@\\@:>@* \\$(arch)//g" | \
-       sed "s/-arch//g" | \
-       sed "s/-Xarch@<:@^ @:>@*//g" > $MAKEFILE.fixed && \
-       mv $MAKEFILE.fixed $MAKEFILE' >> qmake.sh
+--- a/OMEdit/OMEditLIB/MainWindow.cpp
++++ b/OMEdit/OMEditLIB/MainWindow.cpp
+@@ -2717,8 +2717,8 @@ void MainWindow::runOMSensPlugin()
+     pModelInterface->analyzeModel(pModelWidget->toOMSensData());
+   } else {
+     QMessageBox::information(this, QString("%1 - %2").arg(Helper::applicationName).arg(Helper::information), tr("Please open a model before starting the OMSens plugin."), Helper::ok);
+-  }
+ #endif
++  }
+ }
+ 
+ /*!
