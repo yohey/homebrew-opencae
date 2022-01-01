@@ -17,7 +17,6 @@ class OmlibExternalmedia < Formula
 
     mkdir "Build" do
       system "cmake", *args, "../Projects"
-      system "cmake", *args, "../Projects"
       system "cmake", "--build", ".", "--config", "Release", "--target", "install"
     end
 
