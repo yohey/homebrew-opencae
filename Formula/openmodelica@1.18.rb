@@ -11,8 +11,9 @@ class OpenmodelicaAT118 < Formula
   depends_on "automake" => :build
   depends_on "cmake" => :build
   depends_on "gcc" => :build
-  depends_on "libtool" => :build
   depends_on "gnu-sed" => :build
+  depends_on "libtool" => :build
+  depends_on "openjdk" => :build
   depends_on "pkg-config" => :build
 
   depends_on "boost"
@@ -26,6 +27,8 @@ class OpenmodelicaAT118 < Formula
   depends_on "sundials"
   depends_on "qt@5"
   depends_on "kde-mac/kde/qt-webkit"
+
+  conflicts_with "open-scene-graph", because: "\"error: unknown type name 'GLDEBUGPROC'\""
 
   uses_from_macos "curl"
   uses_from_macos "expat"
