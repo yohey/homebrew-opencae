@@ -7,7 +7,8 @@ class OmlibExternalmedia < Formula
 
   depends_on "cmake" => :build
 
-  depends_on "openmodelica"
+  depends_on "yohey/opencae/openmodelica@1.18" => :recommended
+  depends_on "openmodelica" if build.without?("openmodelica@1.18")
 
   patch :DATA
 
@@ -21,8 +22,12 @@ class OmlibExternalmedia < Formula
     end
 
     cd "Modelica/ExternalMedia 3.3.0/Resources/Library" do
-      mv "linux64", "darwin64"
-      system "ln", "-s", "clang130/libExternalMediaLib.dylib", "darwin64/"
+      system "ln", "-s", "clang130/libExternalMediaLib.dylib", "linux64/"
+      if Hardware::CPU.arm?
+        mv "linux64", "aarch64-darwin"
+      else
+        mv "linux64", "darwin64"
+      end
     end
 
     (lib/"omlibrary").mkpath
