@@ -1,8 +1,8 @@
 class Su2 < Formula
   desc "SU2: An Open-Source Suite for Multiphysics Simulation and Design"
   homepage "https://su2code.github.io"
-  url "https://github.com/su2code/SU2.git", :tag => "v7.3.1"
-  version "v7.3.1"
+  url "https://github.com/su2code/SU2.git", :tag => "v7.4.0"
+  version "v7.4.0"
   head "https://github.com/su2code/SU2.git", :branch => "master"
 
   option "with-debug", "Enable debug build"
