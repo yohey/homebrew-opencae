@@ -1,7 +1,7 @@
 class Icea < Formula
   desc "Interface-extended CEA"
-  url "https://github.com/yohey/icea.git", :tag => "v0.2.0"
-  version "v0.2.0"
+  url "https://github.com/yohey/icea.git", :tag => "v0.2.2"
+  version "v0.2.2"
   head "https://github.com/yohey/icea.git", :branch => "main"
 
   depends_on "cmake" => :build
