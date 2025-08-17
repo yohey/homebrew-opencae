@@ -3,6 +3,7 @@ class OpenmodelicaAT125 < Formula
   homepage "https://openmodelica.org"
   url "https://github.com/OpenModelica/OpenModelica.git", :using => :git, :tag => "v1.25.1"
   version "1.25.1"
+  revision 1
   head "https://github.com/OpenModelica/OpenModelica.git"
 
   keg_only :versioned_formula
@@ -26,6 +27,8 @@ class OpenmodelicaAT125 < Formula
 
   def install
     args = std_cmake_args + %w[
+      -DCMAKE_C_COMPILER=/usr/bin/clang
+      -DCMAKE_CXX_COMPILER=/usr/bin/clang++
       -DOM_QT_MAJOR_VERSION=6
       -DOM_OMEDIT_ENABLE_QTWEBENGINE=ON
     ]
@@ -33,6 +36,8 @@ class OpenmodelicaAT125 < Formula
     system "cmake", "-S", ".", "-B", "build_cmake", *args
     system "cmake", "--build", "build_cmake", "-j#{ENV.make_jobs}"
     system "cmake", "--install", "build_cmake"
+
+    ln_s "../Applications/OMPlot.app/Contents/MacOS/OMPlot", bin/"OMPlot"
   end
 
   test do
