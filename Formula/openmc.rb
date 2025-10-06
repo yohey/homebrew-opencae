@@ -3,10 +3,11 @@ class Openmc < Formula
   homepage "https://openmc.org/"
   url "https://github.com/openmc-dev/openmc.git", :tag => "v0.15.2"
   version "v0.15.2"
+  revision 1
   head "https://github.com/openmc-dev/openmc.git", :branch => "develop"
 
   depends_on "cmake" => :build
-  depends_on "llvm" => :build
+  depends_on "llvm@20" => :build
   depends_on "pkg-config" => :build
 
   depends_on "open-mpi"
@@ -53,9 +54,10 @@ class Openmc < Formula
     resource("dagmc").stage do
       args = std_cmake_args(install_prefix: libexec/"dagmc")
 
-      args << "-DCMAKE_C_COMPILER=#{Formula["llvm"].opt_bin}/clang"
-      args << "-DCMAKE_CXX_COMPILER=#{Formula["llvm"].opt_bin}/clang++"
+      args << "-DCMAKE_C_COMPILER=#{Formula["llvm@20"].opt_bin}/clang"
+      args << "-DCMAKE_CXX_COMPILER=#{Formula["llvm@20"].opt_bin}/clang++"
       args << "-DOpenMP_ROOT=#{Formula["libomp"].opt_prefix}"
+      args << "-DOpenMP_CXX_FLAGS=-fopenmp=libomp -I#{Formula["libomp"].opt_include}"
       args << "-DMOAB_DIR=#{libexec}/moab"
       args << "-DBUILD_TALLY=ON"
 
@@ -68,8 +70,8 @@ class Openmc < Formula
 
     args << "-DOPENMC_USE_OPENMP=ON"
 
-    args << "-DCMAKE_C_COMPILER=#{Formula["llvm"].opt_bin}/clang"
-    args << "-DCMAKE_CXX_COMPILER=#{Formula["llvm"].opt_bin}/clang++"
+    args << "-DCMAKE_C_COMPILER=#{Formula["llvm@20"].opt_bin}/clang"
+    args << "-DCMAKE_CXX_COMPILER=#{Formula["llvm@20"].opt_bin}/clang++"
     args << "-DOPENMC_USE_MPI=ON"
     args << "-DOPENMC_USE_DAGMC=ON"
     args << "-DDAGMC_ROOT=#{libexec}/dagmc"
