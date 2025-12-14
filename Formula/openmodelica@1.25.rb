@@ -3,6 +3,7 @@ class OpenmodelicaAT125 < Formula
   homepage "https://openmodelica.org"
   url "https://github.com/OpenModelica/OpenModelica.git", :using => :git, :tag => "v1.25.7"
   version "1.25.7"
+  revision 1
   head "https://github.com/OpenModelica/OpenModelica.git"
 
   keg_only :versioned_formula
@@ -37,6 +38,33 @@ class OpenmodelicaAT125 < Formula
     system "cmake", "--install", "build_cmake"
 
     ln_s "../Applications/OMPlot.app/Contents/MacOS/OMPlot", bin/"OMPlot"
+  end
+
+  def post_install
+    require "tmpdir"
+
+    omlib = lib/"omlibrary"
+    omlib.mkpath
+
+    Dir.mktmpdir("openmodelica-postinstall-") do |tmp|
+      tmp = Pathname(tmp)
+
+      mos = tmp/"install_package.mos"
+      mos.write <<~EOS
+        updatePackageIndex();
+        print(getErrorString());
+        installPackage(Modelica, "4.1.0");
+        print(getErrorString());
+      EOS
+
+      system "env", "HOME=#{tmp}", bin/"omc", mos
+
+      (tmp/".openmodelica/libraries").children.each do |p|
+        next unless p.extname == ".om"
+        target = omlib/p.basename
+        p.rename(target) unless target.exist?
+      end
+    end
   end
 
   test do
