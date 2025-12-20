@@ -67,6 +67,28 @@ class OpenmodelicaAT125 < Formula
     end
   end
 
+  def caveats
+    appsdir = opt_prefix/"Applications"
+    return unless appsdir.directory?
+
+    apps = appsdir.children.select do |p|
+      p.directory? && p.extname == ".app"
+    end
+
+    return if apps.empty?
+
+    app_list = apps.sort_by(&:basename).map { |p| "  #{p}" }.join("\n")
+
+    <<~EOS
+      GUI apps were built and installed here:
+      #{app_list}
+
+      If you want to make them appear in Launchpad:
+        mkdir -p /Applications/OpenModelica
+        ln -s #{opt_prefix}/Applications/*.app /Applications/OpenModelica/
+    EOS
+  end
+
   test do
     assert_match "v#{version}-cmake", shell_output("#{prefix}/bin/omc --version 2>&1", 0)
   end
