@@ -1,9 +1,8 @@
 class Openmc < Formula
   desc "OpenMC Monte Carlo Code"
   homepage "https://openmc.org/"
-  url "https://github.com/openmc-dev/openmc.git", :tag => "v0.15.2"
-  version "v0.15.2"
-  revision 1
+  url "https://github.com/openmc-dev/openmc.git", :tag => "v0.15.3"
+  version "v0.15.3"
   head "https://github.com/openmc-dev/openmc.git", :branch => "develop"
 
   depends_on "cmake" => :build
@@ -13,7 +12,7 @@ class Openmc < Formula
   depends_on "open-mpi"
   depends_on "hdf5-mpi"
 
-  depends_on "eigen"
+  depends_on "eigen@3"
   depends_on "libomp"
   depends_on "libpng"
   depends_on "pugixml"
@@ -21,7 +20,7 @@ class Openmc < Formula
   depends_on "catch2"
   depends_on "metis"
 
-  depends_on "python@3.13"
+  depends_on "python@3.14"
   depends_on "python-setuptools"
 
   resource "moab" do
@@ -82,7 +81,7 @@ class Openmc < Formula
     system "cmake", "--build", "Build", "-j#{ENV.make_jobs}"
     system "cmake", "--install", "Build"
 
-    python = Formula["python@3.13"].opt_bin/"python3"
+    python = Formula["python@3.14"].opt_bin/"python3"
     system python, "-m", "pip", "install", ".", "--prefix=#{prefix}"
   end
 
