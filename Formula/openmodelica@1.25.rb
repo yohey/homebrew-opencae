@@ -3,7 +3,7 @@ class OpenmodelicaAT125 < Formula
   homepage "https://openmodelica.org"
   url "https://github.com/OpenModelica/OpenModelica.git", :using => :git, :tag => "v1.25.7"
   version "1.25.7"
-  revision 1
+  revision 2
   head "https://github.com/OpenModelica/OpenModelica.git"
 
   keg_only :versioned_formula
@@ -36,6 +36,21 @@ class OpenmodelicaAT125 < Formula
     system "cmake", "-S", ".", "-B", "build_cmake", *args
     system "cmake", "--build", "build_cmake", "-j#{ENV.make_jobs}"
     system "cmake", "--install", "build_cmake"
+
+    omedit_path = prefix/"Applications/OMEdit.app/Contents/MacOS/OMEdit"
+
+    mv omedit_path, "#{omedit_path}.bin"
+
+    omedit_path.write <<~EOS
+      #!/bin/zsh
+      set -euo pipefail
+
+      export OPENMODELICALIBRARY="#{opt_lib/"omlibrary"}":${OPENMODELICALIBRARY:-}
+
+      exec "#{omedit_path}.bin" "$@"
+    EOS
+
+    chmod 0755, omedit_path
 
     ln_s "../Applications/OMPlot.app/Contents/MacOS/OMPlot", bin/"OMPlot"
   end
