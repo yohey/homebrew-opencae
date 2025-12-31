@@ -3,6 +3,7 @@ class OmlibExternalmedia < Formula
   homepage "https://github.com/modelica-3rdparty/ExternalMedia"
   url "https://github.com/modelica-3rdparty/ExternalMedia.git", :using => :git, :tag => "v4.1.1"
   version "4.1.1"
+  revision 1
   head "https://github.com/modelica-3rdparty/ExternalMedia.git"
 
   depends_on "cmake" => :build
@@ -29,8 +30,8 @@ class OmlibExternalmedia < Formula
     (lib/"omlibrary").install Dir["Modelica/ExternalMedia #{version}"]
 
     if Hardware::CPU.arm?
-      system "echo", "if Hardware::CPU.arm?"
       ln_s "aarch64-darwin", lib/"omlibrary/ExternalMedia #{version}/Resources/Library/arm64-darwin"
+      ln_s "aarch64-darwin", lib/"omlibrary/ExternalMedia #{version}/Resources/Library/darwin64"
     end
   end
 
