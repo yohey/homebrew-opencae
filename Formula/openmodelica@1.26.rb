@@ -1,8 +1,8 @@
 class OpenmodelicaAT126 < Formula
   desc "OpenModelica is an open-source Modelica-based modeling and simulation environment intended for industrial and academic usage."
   homepage "https://openmodelica.org"
-  url "https://github.com/OpenModelica/OpenModelica.git", :using => :git, :tag => "v1.26.0"
-  version "1.26.0"
+  url "https://github.com/OpenModelica/OpenModelica.git", :using => :git, :tag => "v1.26.1"
+  version "1.26.1"
   head "https://github.com/OpenModelica/OpenModelica.git"
 
   keg_only :versioned_formula
